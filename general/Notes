@@ -1,0 +1,36 @@
+                        ======================== GO MICROSERVICES ======================
+
+Tools:
+
+1. Make
+Website: https://www.gnu.org/software/make/
+Install Chocolatey: Set-ExecutionPolicy Bypass -Scope Process -Force; `
+                      iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Install Make: choco install make
+Check: make --version
+
+2. Docker
+Tu build images and run them as containers.
+Website: https://www.docker.com/
+Install : https://docs.docker.com/desktop/install/windows-install/
+Check: docker --version
+
+                        ======================== COMMANDS ======================
+
+go mod init - initializes new module in current directory
+
+# Install go-chi:
+Chi is a lightweight, idiomatic and composable router for building Go HTTP services.
+Website: https://github.com/go-chi/chi
+Install:
+go get github.com/go-chi/chi/v5
+go get github.com/go-chi/chi/v5/middleware
+go get github.com/go-chi/cors
+
+Gorilla Web toolkit can be used also (https://www.gorillatoolkit.org/), or other 3rd party libraries.
+
+
+# Install Postgres Library
+go get github.com/jackc/pgconn
+go get github.com/jackc/pgx/v4
+go get github.com/jackc/pgx/v4/stdlib
