@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 )
 
@@ -47,7 +46,15 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 
 	switch requestPayload.Action {
 	case "auth":
-		app.authenticate(w, requestPayload.Auth)
+		{
+			data, _ := json.Marshal(requestPayload)
+			l := LogPayload{
+				Name: requestPayload.Action,
+				Data: string(data),
+			}
+			app.authenticate(w, requestPayload.Auth)
+			app.insertLog(w, l)
+		}
 
 	default:
 		app.errorJSON(w, errors.New("unknown action"))
@@ -90,7 +97,6 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 
 	// Decode the Json
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
-	fmt.Println("Decoding the Json", jsonFromService)
 
 	if err != nil {
 		_ = app.errorJSON(w, err)
