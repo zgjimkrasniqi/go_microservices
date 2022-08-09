@@ -32,6 +32,11 @@ type AuthPayload struct {
 	Password string `json:"password"`
 }
 
+type LogPayload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
+}
+
 func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	var requestPayload RequestPayload
 	err := app.readJson(r, &requestPayload)
@@ -103,4 +108,27 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	payload.Data = jsonFromService.Data
 
 	_ = app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) insertLog(w http.ResponseWriter, l LogPayload) {
+	// Create some json and send to the logger microservice
+	jsonData, _ := json.Marshal(l)
+
+	// Call the service
+	// url: http://<name of the service specified in docker-compose.yml>/...
+	request, err := http.NewRequest("POST", "http://logger-service/insert_log", bytes.NewBuffer(jsonData))
+
+	if err != nil {
+		_ = app.errorJSON(w, err)
+		return
+	}
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		_ = app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
 }

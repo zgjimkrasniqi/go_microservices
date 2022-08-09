@@ -1,0 +1,40 @@
+CREATE SEQUENCE public.logger_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.logger_id_seq OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+CREATE TABLE public.logger (
+    id integer DEFAULT nextval('public.logger_id_seq'::regclass) NOT NULL,
+    name character varying(255),
+    data character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.logger OWNER TO postgres;
+
+
+SELECT pg_catalog.setval('public.logger_id_seq', 1, true);
+
+
+ALTER TABLE ONLY public.logger
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+INSERT INTO "public"."logger"("name","data","created_at","updated_at")
+VALUES
+(E'Manual',E'Log inserted manually',E'2022-03-14 00:00:00',E'2022-03-14 00:00:00');
+
+
+
+

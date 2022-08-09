@@ -56,7 +56,7 @@ func connectToDB() *sql.DB {
 	dsn := os.Getenv("DSN")
 
 	// Locally
-	// dsn := "host=localhost port=5432 user=postgres password=postgres dbname=go_microservices sslmode=disable timezone=UTC connect_timeout=5"
+	// dsn := "host=localhost port=5432 user=postgres password=postgres dbname=users sslmode=disable timezone=UTC connect_timeout=5"
 
 	for {
 		connection, err := openDB(dsn)
