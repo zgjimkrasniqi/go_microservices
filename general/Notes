@@ -1,4 +1,4 @@
-                        ======================== GO MICROSERVICES ======================
+================================================ GO MICROSERVICES =====================================
 
 Tools:
 
@@ -15,7 +15,7 @@ Website: https://www.docker.com/
 Install : https://docs.docker.com/desktop/install/windows-install/
 Check: docker --version
 
-                        ======================== COMMANDS ======================
+============================================== COMMANDS =============================================
 
 go mod init - initializes new module in current directory
 
@@ -34,3 +34,21 @@ Gorilla Web toolkit can be used also (https://www.gorillatoolkit.org/), or other
 go get github.com/jackc/pgconn
 go get github.com/jackc/pgx/v4
 go get github.com/jackc/pgx/v4/stdlib
+
+
+
+=========================== LISTENER SERVICE (AMQP with RabbitMQ) ===================================
+
+Until now the way that these microservices communicate with each other is either by having the broker
+receive a request, send it off to a microservice and get the response back, or directly for example
+with the authentication microservice. Listener Service is going to be added, this service will talk
+with RabbitMQ, which is a server that actually manages queues.
+
+For example: If someone wants to authenticate, it will send a request to the broker service and then
+the broker service won't communicate directly with the Authentication Service, instead it will push
+instruction to the RabbitMQ, RabbitMQ will put that instruction into the queue and the Listener Service
+will look at the queue, it will pull out all instructions that are in the queue, and then it will
+decide which Service to call to handle that request.
+
+# Install RabbitMQ driver
+go get github.com/rabbitmq/amqp091-go
