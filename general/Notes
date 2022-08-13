@@ -52,3 +52,12 @@ decide which Service to call to handle that request.
 
 # Install RabbitMQ driver
 go get github.com/rabbitmq/amqp091-go
+
+Use docker hub to see the available images for RabbitMQ
+
+***
+amqp.Dial(amqp://username:password@host")
+First to try to connect with rabbit mq locally we can leave the host as "localhost"
+but once we containerize this and make it part of our docker compose file, that is
+going to change to whatever we called rabbit mq in docker compose.
+So amqp.Dial(amqp://guest:guest@localhost") is going to change to amqp.Dial(amqp://guest:guest@rabbitmq")
