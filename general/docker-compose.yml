@@ -39,6 +39,14 @@ services:
     environment:
       LDSN: "host=postgres-logger port=5432 user=postgres password=password dbname=logger sslmode=disable timezone=UTC connect_timeout=5"
 
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+      
   postgres:
     image: 'postgres:14.0'
     ports:

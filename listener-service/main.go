@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"listener-service/event"
 	"log"
 	"math"
 	"os"
@@ -23,13 +24,21 @@ func main() {
 			log.Println(err)
 		}
 	}(rabbitConn)
-	log.Println("Connected to RabbitMQ")
 
 	// Start listening for messages
+	log.Println("Listening for and consuming RabbitMQ messages...")
 
 	// Create a consumer
+	consumer, err := event.NewConsumer(rabbitConn)
+	if err != nil {
+		panic(err)
+	}
 
 	// Watch the queue and consume events
+	err = consumer.Listen([]string{"log.INFO", "log.WARNING", "log.ERROR"})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func connect() (*amqp.Connection, error) {
@@ -45,13 +54,17 @@ func connect() (*amqp.Connection, error) {
 	// Do not continue until rabbit is ready
 	// amqp.Dial(amqp://username:password@host")
 	for {
-		c, err := amqp.Dial("amqp://guest:guest@localhost")
+		// If you want to test it locally, but since we are using docker
+		// localhost should be replaced with rabbitmq (as we have specified in the docker compose)
+		// c, err := amqp.Dial("amqp://guest:guest@localhost")
+		c, err := amqp.Dial("amqp://guest:guest@rabbitmq")
 		if err != nil {
 			// If there is an error, we cannot connect right now
 			fmt.Println("RabbitMQ not yet ready...")
 			counts++
 		} else {
 			connection = c
+			log.Println("Connected to RabbitMQ")
 			break
 		}
 

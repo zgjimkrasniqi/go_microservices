@@ -38,6 +38,9 @@ go get github.com/jackc/pgx/v4/stdlib
 
 
 =========================== LISTENER SERVICE (AMQP with RabbitMQ) ===================================
+Sources:
+ - AMQP 0-9-1 Model: https://www.rabbitmq.com/tutorials/amqp-concepts.html
+ - https://hevodata.com/learn/rabbitmq-exchange-type/
 
 Until now the way that these microservices communicate with each other is either by having the broker
 receive a request, send it off to a microservice and get the response back, or directly for example
