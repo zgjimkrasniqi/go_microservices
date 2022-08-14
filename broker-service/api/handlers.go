@@ -1,6 +1,7 @@
 package main
 
 import (
+	"broker-service/event"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -54,6 +55,15 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 			}
 			app.authenticate(w, requestPayload.Auth)
 			app.insertLog(w, l)
+		}
+
+	case "log":
+		{
+			l := LogPayload{
+				Name: requestPayload.Action,
+				Data: "Just log something..",
+			}
+			app.logEventViaRabbit(w, l)
 		}
 
 	default:
@@ -137,4 +147,36 @@ func (app *Config) insertLog(w http.ResponseWriter, l LogPayload) {
 	}
 
 	defer response.Body.Close()
+}
+
+func (app *Config) logEventViaRabbit(w http.ResponseWriter, l LogPayload) {
+	err := app.pushToQueue(l.Name, l.Data)
+	if err != nil {
+		app.errorJSON(w, err)
+	}
+
+	var payload JsonResponse
+	payload.Error = false
+	payload.Message = "logged via RabbitMQ"
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) pushToQueue(name, msg string) error {
+	emitter, err := event.NewEventEmitter(app.Rabbit)
+	if err != nil {
+		return err
+	}
+
+	payload := LogPayload{
+		Name: name,
+		Data: msg,
+	}
+
+	j, _ := json.Marshal(payload)
+	err = emitter.Push(string(j), "log.INFO")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
